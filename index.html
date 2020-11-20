@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -6,69 +6,267 @@
         <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <link rel="stylesheet" href="./resources/ol.css">
-        <link rel="stylesheet" href="resources/fontawesome-all.min.css">
-        <link rel="stylesheet" href="./resources/ol3-layerswitcher.css">
-        <link rel="stylesheet" href="./resources/qgis2web.css">
-<style>
-.search-layer {
-  top: 65px;
-  left: .5em;
-}
-.ol-touch .search-layer {
-  top: 80px;
-}
-</style>
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
         <style>
-        html, body {
-            background-color: #ffffff;
-        }
-        .ol-control button {
-            background-color: #f8f8f8 !important;
-            color: #000000 !important;
-            border-radius: 0px !important;
-        }
-        .ol-zoom, .geolocate, .gcd-gl-control .ol-control {
-            background-color: rgba(255,255,255,.4) !important;
-            padding: 3px !important;
-        }
-        .ol-scale-line {
-            background: none !important;
-        }
-        .ol-scale-line-inner {
-            border: 2px solid #f8f8f8 !important;
-            border-top: none !important;
-            background: rgba(255, 255, 255, 0.5) !important;
-            color: black !important;
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
         }
         </style>
-        <style>
-        #map {
-            width: 1061px;
-            height: 501px;
-        }
-        </style>
-        <title></title>
+        <title>Localisation des cas confirmés de covid19 au Sénégal</title>
     </head>
     <body>
         <div id="map">
-            <div id="popup" class="ol-popup">
-                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-                <div id="popup-content"></div>
-            </div>
-         <div id="logo">
-            <img src="https://photos.app.goo.gl/Eh1dRPjfGmjCosyv8/" alt="some_text" style="position:fixed;bottom:0;left:0;">
         </div>
-        </div>
-        <script src="resources/qgis2web_expressions.js"></script>
-        <script src="resources/polyfills.js"></script>
-        <script src="./resources/functions.js"></script>
-        <script src="./resources/ol.js"></script>
-        <script src="./resources/ol3-layerswitcher.js"></script>
-        <script src="layers/CARTESENEGAL_1.js"></script><script src="layers/CENTROID_CARTE_SENEGAL_2.js"></script>
-        <script src="styles/CARTESENEGAL_1_style.js"></script><script src="styles/CENTROID_CARTE_SENEGAL_2_style.js"></script>
-        <script src="./layers/layers.js" type="text/javascript"></script> 
-        <script src="./resources/qgis2web.js"></script>
-        <script src="./resources/Autolinker.min.js"></script>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="data/CARTE_SENEGAL_1.js"></script>
+        <script src="data/cas_confirme_2.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:11, minZoom:3
+        }).fitBounds([[12.335868653857819,-22.307492578036747],[17.02209732554768,-12.203634067833162]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        var layer_OpenStreetMap_0 = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 3,
+            maxZoom: 11,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_OpenStreetMap_0;
+        map.addLayer(layer_OpenStreetMap_0);
+        function pop_CARTE_SENEGAL_1(feature, layer) {
+            var popupContent = '<table> max-width:500px >\                   <tr>\
+                        <td colspan="2">' + (feature.properties['NOM'] !== null ? Autolinker.link(feature.properties['NOM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['AREA'] !== null ? Autolinker.link(feature.properties['AREA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PERIMETRE'] !== null ? Autolinker.link(feature.properties['PERIMETRE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Code'] !== null ? Autolinker.link(feature.properties['Code'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Population'] !== null ? Autolinker.link(feature.properties['Population'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Cas_confir'] !== null ? Autolinker.link(feature.properties['Cas_confir'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_CARTE_SENEGAL_1_0(feature) {
+            if (feature.properties['Cas_confir'] >= 1.000000 && feature.properties['Cas_confir'] <= 4.000000 ) {
+                return {
+                pane: 'pane_CARTE_SENEGAL_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.727)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,0.727)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['Cas_confir'] >= 4.000000 && feature.properties['Cas_confir'] <= 16.200000 ) {
+                return {
+                pane: 'pane_CARTE_SENEGAL_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.727)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,97,0.727)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['Cas_confir'] >= 16.200000 && feature.properties['Cas_confir'] <= 67.400000 ) {
+                return {
+                pane: 'pane_CARTE_SENEGAL_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.727)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,191,0.727)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['Cas_confir'] >= 67.400000 && feature.properties['Cas_confir'] <= 142.400000 ) {
+                return {
+                pane: 'pane_CARTE_SENEGAL_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.727)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(171,221,164,0.727)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['Cas_confir'] >= 142.400000 && feature.properties['Cas_confir'] <= 3017.000000 ) {
+                return {
+                pane: 'pane_CARTE_SENEGAL_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.727)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(43,131,186,0.727)',
+                interactive: false,
+            }
+            }
+        }
+        map.createPane('pane_CARTE_SENEGAL_1');
+        map.getPane('pane_CARTE_SENEGAL_1').style.zIndex = 401;
+        map.getPane('pane_CARTE_SENEGAL_1').style['mix-blend-mode'] = 'normal';
+        var layer_CARTE_SENEGAL_1 = new L.geoJson(json_CARTE_SENEGAL_1, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_CARTE_SENEGAL_1',
+            layerName: 'layer_CARTE_SENEGAL_1',
+            pane: 'pane_CARTE_SENEGAL_1',
+            onEachFeature: pop_CARTE_SENEGAL_1,
+            style: style_CARTE_SENEGAL_1_0,
+        });
+        bounds_group.addLayer(layer_CARTE_SENEGAL_1);
+        map.addLayer(layer_CARTE_SENEGAL_1);
+        function pop_cas_confirme_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">NOM</th>\
+                        <td>' + (feature.properties['NOM'] !== null ? Autolinker.link(feature.properties['NOM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(feature.properties['Population'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Cas_confir</th>\
+                        <td>' + (feature.properties['Cas_confir'] !== null ? Autolinker.link(feature.properties['Cas_confir'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Photo</strong><br />' + (feature.properties['Photo'] !== null ? '<img src="images/' + String(feature.properties['Photo']).replace(/[\\\/:]/g, '_').trim() + '">' : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_cas_confirme_2_0() {
+            return {
+                pane: 'pane_cas_confirme_2',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(219,30,42,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_cas_confirme_2');
+        map.getPane('pane_cas_confirme_2').style.zIndex = 402;
+        map.getPane('pane_cas_confirme_2').style['mix-blend-mode'] = 'normal';
+        var layer_cas_confirme_2 = new L.geoJson(json_cas_confirme_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_cas_confirme_2',
+            layerName: 'layer_cas_confirme_2',
+            pane: 'pane_cas_confirme_2',
+            onEachFeature: pop_cas_confirme_2,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_cas_confirme_2_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_cas_confirme_2);
+        map.addLayer(layer_cas_confirme_2);
+            var title = new L.Control();
+            title.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+            title.update = function () {
+                this._div.innerHTML = '<h2>Localisation des cas confirmés de covid19 au Sénégal</h2>';
+            };
+            title.addTo(map);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/cas_confirme_2.png" /> cas_confirme': layer_cas_confirme_2,'CARTE_SENEGAL<br /><table><tr><td style="text-align: center;"><img src="legend/CARTE_SENEGAL_1_140.png" /></td><td>1 - 4</td></tr><tr><td style="text-align: center;"><img src="legend/CARTE_SENEGAL_1_41621.png" /></td><td>4 - 16,2</td></tr><tr><td style="text-align: center;"><img src="legend/CARTE_SENEGAL_1_1626742.png" /></td><td>16,2 - 67,4</td></tr><tr><td style="text-align: center;"><img src="legend/CARTE_SENEGAL_1_67414243.png" /></td><td>67,4 - 142,4</td></tr><tr><td style="text-align: center;"><img src="legend/CARTE_SENEGAL_1_142430174.png" /></td><td>142,4 - 3017</td></tr></table>': layer_CARTE_SENEGAL_1,"OpenStreetMap": layer_OpenStreetMap_0,}).addTo(map);
+        setBounds();
+        var i = 0;
+        layer_CARTE_SENEGAL_1.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['NOM'] !== null?String('<div style="color: #000000; font-size: 7pt; font-family: \'MS Shell Dlg 2\', sans-serif;">' + layer.feature.properties['NOM']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_CARTE_SENEGAL_1'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        map.addControl(new L.Control.Search({
+            layer: layer_CARTE_SENEGAL_1,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'NOM'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        resetLabels([layer_CARTE_SENEGAL_1]);
+        map.on("zoomend", function(){
+            resetLabels([layer_CARTE_SENEGAL_1]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_CARTE_SENEGAL_1]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_CARTE_SENEGAL_1]);
+        });
+        </script>
     </body>
 </html>
