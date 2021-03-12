@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -37,7 +37,7 @@
         <script>
         var map = L.map('map', {
             zoomControl:true, maxZoom:11, minZoom:3
-        }).fitBounds([[12.335868653857819,-22.307492578036747],[17.02209732554768,-12.203634067833162]]);
+        }).fitBounds([[13.838029706195703,-20.11098042478717],[18.480188688874673,-9.916766088647783]]);
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var bounds_group = new L.featureGroup([]);
@@ -54,7 +54,8 @@
         layer_OpenStreetMap_0;
         map.addLayer(layer_OpenStreetMap_0);
         function pop_CARTE_SENEGAL_1(feature, layer) {
-            var popupContent = '<table> max-width:500px >\                   <tr>\
+            var popupContent = '<table>\
+                    <tr>\
                         <td colspan="2">' + (feature.properties['NOM'] !== null ? Autolinker.link(feature.properties['NOM'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
@@ -89,7 +90,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(215,25,28,0.727)',
-                interactive: false,
+                interactive: true,
             }
             }
             if (feature.properties['Cas_confir'] >= 4.000000 && feature.properties['Cas_confir'] <= 16.200000 ) {
@@ -104,7 +105,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(253,174,97,0.727)',
-                interactive: false,
+                interactive: true,
             }
             }
             if (feature.properties['Cas_confir'] >= 16.200000 && feature.properties['Cas_confir'] <= 67.400000 ) {
@@ -119,7 +120,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(255,255,191,0.727)',
-                interactive: false,
+                interactive: true,
             }
             }
             if (feature.properties['Cas_confir'] >= 67.400000 && feature.properties['Cas_confir'] <= 142.400000 ) {
@@ -134,7 +135,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(171,221,164,0.727)',
-                interactive: false,
+                interactive: true,
             }
             }
             if (feature.properties['Cas_confir'] >= 142.400000 && feature.properties['Cas_confir'] <= 3017.000000 ) {
@@ -149,7 +150,7 @@
                 fill: true,
                 fillOpacity: 1,
                 fillColor: 'rgba(43,131,186,0.727)',
-                interactive: false,
+                interactive: true,
             }
             }
         }
@@ -158,7 +159,7 @@
         map.getPane('pane_CARTE_SENEGAL_1').style['mix-blend-mode'] = 'normal';
         var layer_CARTE_SENEGAL_1 = new L.geoJson(json_CARTE_SENEGAL_1, {
             attribution: '',
-            interactive: false,
+            interactive: true,
             dataVar: 'json_CARTE_SENEGAL_1',
             layerName: 'layer_CARTE_SENEGAL_1',
             pane: 'pane_CARTE_SENEGAL_1',
